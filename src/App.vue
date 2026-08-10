@@ -103,12 +103,47 @@ onMounted(() => {
   const firstScene = document.querySelector<HTMLElement>('#scene-0')
   if (firstScene) { gsap.fromTo(firstScene.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, delay: 0.15, ease: 'power3.out' }); animateProducts(firstScene) }
   // allow native scrolling behavior where possible; Observer will still detect wheel/touch
-  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: false, onDown: () => goToScene(currentIndex.value - 1, 'up'), onUp: () => goToScene(currentIndex.value + 1, 'down') })
+  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: false, onDown: () => goToScene(currentIndex.value - 1, 'up'), onUp: () => goToScene(currentIndex.value + 1, 'down'), onLeft: () => goToScene(currentIndex.value + 1, 'down'), onRight: () => goToScene(currentIndex.value - 1, 'up') })
   keyDownHandler = (event: KeyboardEvent) => {
     if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(event.key)) goToScene(currentIndex.value + 1, 'down')
     if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(event.key)) goToScene(currentIndex.value - 1, 'up')
   }
   window.addEventListener('keydown', keyDownHandler)
+  // tap ripple — wave effect on nearby floating items
+  const shell = document.querySelector('.cinema-shell')
+  if (shell) {
+    shell.addEventListener('click', (e: MouseEvent) => {
+      if (isAnimating.value) return
+      const target = e.target as HTMLElement
+      if (target.closest('button, a, nav, .scroll-cue')) return
+      const rect = shell.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      // create ripple
+      const ripple = document.createElement('div')
+      ripple.className = 'tap-ripple'
+      ripple.style.left = x + 'px'
+      ripple.style.top = y + 'px'
+      shell.appendChild(ripple)
+      gsap.fromTo(ripple, { width: 0, height: 0, opacity: 0.5 }, { width: 200, height: 200, opacity: 0, marginLeft: -100, marginTop: -100, duration: 0.9, ease: 'power3.out', onComplete: () => ripple.remove() })
+      // push nearby floating products
+      const scene = document.querySelector('.cinema-scene.active')
+      if (!scene) return
+      const products = scene.querySelectorAll<HTMLElement>('.product-float')
+      products.forEach((product) => {
+        const pr = product.getBoundingClientRect()
+        const pcx = pr.left + pr.width / 2 - rect.left
+        const pcy = pr.top + pr.height / 2 - rect.top
+        const dx = pcx - x
+        const dy = pcy - y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist < 300) {
+          const force = (1 - dist / 300) * 40
+          gsap.to(product, { x: '+=' + (dx / dist) * force, y: '+=' + (dy / dist) * force, duration: 0.3, ease: 'power2.out', overwrite: 'auto', onComplete: () => gsap.to(product, { x: '-=' + (dx / dist) * force, y: '-=' + (dy / dist) * force, duration: 0.6, ease: 'elastic.out(1,0.4)', overwrite: 'auto' }) })
+        }
+      })
+    })
+  }
 })
 onUnmounted(() => { observer?.kill(); if (keyDownHandler) window.removeEventListener('keydown', keyDownHandler); floatingTweens.forEach((tween) => tween.kill()) })
 </script>
@@ -121,7 +156,7 @@ onUnmounted(() => { observer?.kill(); if (keyDownHandler) window.removeEventList
       <section id="scene-0" class="cinema-scene active hero-scene">
         <div class="scene-orb orb-one"></div><div class="scene-orb orb-two"></div>
         <img class="product-float hero-printer" :src="productImages.printer" alt="چاپی فڵیکس" /><img class="product-float hero-awards" :src="productImages.awards" alt="کریستاڵ" /><img class="product-float hero-bags" :src="productImages.bags" alt="بەگ" /><img class="product-float hero-flags" :src="productImages.flags" alt="ئاڵا" /><img class="product-float hero-pens" :src="productImages.pens" alt="قەڵەم" />
-        <div class="scene-content hero-content"><p class="eyebrow animate-child">لە ٢٠١٥ ـەوە، لەگەڵ براندەکەت</p><h1 class="animate-child">بۆ ئەوەی <em>شاز</em><br />دەر بکەویت، شاز هەڵبژێرە</h1><p class="intro animate-child">چاپ، ڕیکلام و دیزاینی پڕۆفیشناڵ بۆ ئەو براندەی کە شایەنی بینرانە.</p><div class="animate-child hero-actions"><button @click="goToScene(1, 'down')">ببینە چی دەکەین <span>↓</span></button><a class="hero-phone-badge" href="tel:07701566553"><i>📞</i> 0770 156 6553</a></div></div><div class="scroll-cue">راکێشە <span></span></div>
+        <div class="scene-content hero-content"><p class="eyebrow animate-child">لە ٢٠١٥ ـەوە، لەگەڵ براندەکەت</p><h1 class="animate-child">بۆ ئەوەی <em>شاز</em><br />دەر بکەویت، شاز هەڵبژێرە</h1><p class="intro animate-child">چاپ، ڕیکلام و دیزاینی پڕۆفیشناڵ بۆ ئەو براندەی کە شایەنی بینرانە.</p><div class="animate-child hero-actions"><button @click="goToScene(1, 'down')">ببینە چی دەکەین <span>↓</span></button><a class="hero-phone-badge" href="tel:07701566553"><i>📞</i> 0770 156 6553</a></div></div><div class="scroll-cue">→ راکێشە ← <span></span></div>
       </section>
       <section id="scene-1" class="cinema-scene feature-scene format-scene"><div class="scene-content split-content"><div class="copy-panel"><p class="eyebrow animate-child">01 / LARGE FORMAT</p><h2 class="animate-child">قەبارەی گەورە،<br /><em>کاریگەری گەورە</em></h2><p class="intro animate-child">چاپی فڵیکس و حەرفی بارز بە ڕەنگی درەوشاوە و وردترین جزییات، بۆ ئەوەی نامەکەت لە هەر شوێنێک بێت.</p><div class="service-tags animate-child"><span>چاپی فڵیکس</span><span>حەرفی بارز</span><span>ساین بۆرد</span></div></div><div class="product-stage format-products"><div class="glow-ring"></div><img class="product-float format-printer" :src="productImages.printer" alt="پرێنتەر" /><img class="product-float format-sign" :src="productImages.sign" alt="ساین" /><img class="product-float format-brochure" :src="productImages.brochure" alt="ستاند" /><div class="metric animate-child"><b>+10</b><span>ساڵ ئەزموون</span></div></div></div></section>
       <section id="scene-2" class="cinema-scene feature-scene corporate-scene"><div class="scene-content split-content reverse"><div class="product-stage corporate-products"><div class="glow-ring"></div><img class="product-float corporate-awards" :src="productImages.awards" alt="کریستاڵ" /><img class="product-float corporate-ids" :src="productImages.ids" alt="ناسنامە" /><img class="product-float corporate-vest" :src="productImages.vests" alt="جلوبەرگ" /><img class="product-float corporate-shirt" :src="productImages.tshirt" alt="تەیشێرت" /></div><div class="copy-panel"><p class="eyebrow animate-child">02 / CORPORATE IDENTITY</p><h2 class="animate-child">براندێک کە<br /><em>بە تۆ دەناسرێتەوە</em></h2><p class="intro animate-child">لە وەسڵ و کارتی ناسنامە تا کریستاڵی ڕێزلێنان و جلوبەرگی تیمەکەت؛ هەموو وردەکارییەک لە ژێر یەک هێڵی دیزاین.</p><div class="service-tags animate-child"><span>ڕەچەتە و وەسڵ</span><span>ناسنامە</span><span>تەیشێرت</span></div></div></div></section>
