@@ -8,6 +8,7 @@ gsap.registerPlugin(Observer)
 const currentIndex = ref(0)
 const isAnimating = ref(false)
 let observer: Observer | null = null
+let keyDownHandler: ((event: KeyboardEvent) => void) | null = null
 let floatingTweens: gsap.core.Tween[] = []
 
 const scenes = [
@@ -41,7 +42,8 @@ function goToScene(index: number, direction: 'down' | 'up') {
   if (!current || !next) return
   isAnimating.value = true
   gsap.set(next, { display: 'flex', zIndex: 2 })
-  gsap.timeline({ onComplete: () => { gsap.set(current, { display: 'none', clearProps: 'all' }); next.classList.add('active'); current.classList.remove('active'); currentIndex.value = index; isAnimating.value = false; animateProducts(next) } })
+  animateProducts(next)
+  gsap.timeline({ onComplete: () => { gsap.set(current, { display: 'none', clearProps: 'all' }); next.classList.add('active'); current.classList.remove('active'); currentIndex.value = index; isAnimating.value = false } })
     .to(current, { opacity: 0, scale: direction === 'down' ? 0.92 : 1.06, filter: 'blur(14px)', duration: 0.62, ease: 'power3.inOut' })
     .fromTo(next, { opacity: 0, yPercent: direction === 'down' ? 16 : -16, scale: direction === 'down' ? 1.06 : 0.96, filter: 'blur(14px)' }, { opacity: 1, yPercent: 0, scale: 1, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }, '-=0.3')
     .fromTo(next.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power3.out' }, '-=0.6')
@@ -50,9 +52,14 @@ function goToScene(index: number, direction: 'down' | 'up') {
 onMounted(() => {
   const firstScene = document.querySelector<HTMLElement>('#scene-0')
   if (firstScene) { gsap.fromTo(firstScene.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, delay: 0.15, ease: 'power3.out' }); animateProducts(firstScene) }
-  observer = Observer.create({ target: window, type: 'wheel,touch,keydown', wheelSpeed: 1, tolerance: 14, preventDefault: true, onDown: () => goToScene(currentIndex.value - 1, 'up'), onUp: () => goToScene(currentIndex.value + 1, 'down'), onKeyDown: (event) => { if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(event.key)) goToScene(currentIndex.value + 1, 'down'); if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(event.key)) goToScene(currentIndex.value - 1, 'up') } })
+  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: true, onDown: () => goToScene(currentIndex.value - 1, 'up'), onUp: () => goToScene(currentIndex.value + 1, 'down') })
+  keyDownHandler = (event: KeyboardEvent) => {
+    if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(event.key)) goToScene(currentIndex.value + 1, 'down')
+    if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(event.key)) goToScene(currentIndex.value - 1, 'up')
+  }
+  window.addEventListener('keydown', keyDownHandler)
 })
-onUnmounted(() => { observer?.kill(); floatingTweens.forEach((tween) => tween.kill()) })
+onUnmounted(() => { observer?.kill(); if (keyDownHandler) window.removeEventListener('keydown', keyDownHandler); floatingTweens.forEach((tween) => tween.kill()) })
 </script>
 
 <template>
