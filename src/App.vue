@@ -25,7 +25,7 @@ const scenes = [
 ]
 
 // per-scene animation variants (index-based). Options: 'fade', 'slide', 'zoom', 'float', 'flip'
-const animationVariants = ['fade', 'slide', 'zoom', 'float', 'flip']
+const animationVariants = ['shade', 'roll', 'scatter', 'unfold', 'roll']
 
 const productImages = {
   printer: '/products/printer.png', sign: '/products/sign-soran.png', brochure: '/products/brochure-roll.png',
@@ -65,24 +65,33 @@ function goToScene(index: number, direction: 'down' | 'up') {
 function runSceneTransition(current: HTMLElement, next: HTMLElement, variant: string, direction: 'down' | 'up', onComplete: () => void) {
   const tl = gsap.timeline({ onComplete })
   switch (variant) {
-    case 'slide':
-      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, duration: 0.7, ease: 'power3.in' })
-        .fromTo(next, { yPercent: direction === 'down' ? 100 : -100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.85, ease: 'power4.out' }, '-=0.15')
+    case 'shade':
+      // paper pulls up like window shade
+      tl.to(current, { yPercent: -100, duration: 0.9, ease: 'power2.inOut' })
+        .set(next, { yPercent: 0, opacity: 1 }, 0)
       break
-    case 'zoom':
-      tl.to(current, { opacity: 0, scale: direction === 'down' ? 0.9 : 1.12, duration: 0.55, ease: 'power2.inOut' })
-        .fromTo(next, { scale: direction === 'down' ? 1.12 : 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: 'power4.out' }, '-=0.2')
+    case 'drop':
+      // paper falls from above and bounces
+      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, duration: 0.5, ease: 'power3.in' })
+        .fromTo(next, { yPercent: direction === 'down' ? -120 : 120, rotation: direction === 'down' ? 6 : -6 }, { yPercent: 0, rotation: 0, duration: 0.8, ease: 'bounce.out' }, '-=0.1')
       break
-    case 'float':
-      tl.to(current, { opacity: 0, x: direction === 'down' ? -40 : 40, y: direction === 'down' ? -14 : 14, duration: 0.7, ease: 'sine.inOut' })
-        .fromTo(next, { opacity: 0, x: direction === 'down' ? 40 : -40, y: direction === 'down' ? 14 : -14 }, { opacity: 1, x: 0, y: 0, duration: 0.9, ease: 'power3.out' }, '-=0.4')
+    case 'roll':
+      // paper tumbles away, next rolls in
+      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, rotation: direction === 'down' ? 15 : -15, opacity: 0, duration: 0.65, ease: 'power3.in' })
+        .fromTo(next, { yPercent: direction === 'down' ? 100 : -100, rotation: direction === 'down' ? -12 : 12, scale: 0.9 }, { yPercent: 0, rotation: 0, scale: 1, duration: 0.9, ease: 'elastic.out(1,0.6)' }, '-=0.2')
       break
-    case 'flip':
-      tl.to(current, { rotationY: direction === 'down' ? 20 : -20, opacity: 0, duration: 0.6, transformOrigin: '50% 50%', ease: 'back.in' })
-        .fromTo(next, { rotationY: direction === 'down' ? -20 : 20, opacity: 0 }, { rotationY: 0, opacity: 1, duration: 0.8, ease: 'back.out' }, '-=0.25')
+    case 'scatter':
+      // items scatter/fall — current lifts up, next tumbles into place
+      tl.to(current, { yPercent: -60, scale: 0.85, opacity: 0, duration: 0.5, ease: 'power3.in' })
+        .fromTo(next, { yPercent: 80, rotation: -8, scale: 0.88, opacity: 0 }, { yPercent: 0, rotation: 0, scale: 1, opacity: 1, duration: 1, ease: 'elastic.out(1,0.5)' }, '-=0.15')
+      break
+    case 'unfold':
+      // paper unfolds — current folds up, next unfolds from center
+      tl.to(current, { scaleY: 0, transformOrigin: '50% 0%', opacity: 0, duration: 0.55, ease: 'power3.in' })
+        .fromTo(next, { scaleY: 0, transformOrigin: '50% 100%', opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.75, ease: 'power3.out' }, '-=0.15')
       break
     default:
-      // fade (existing behavior)
+      // fade (fallback)
       tl.to(current, { opacity: 0, scale: direction === 'down' ? 0.92 : 1.06, filter: 'blur(14px)', duration: 0.62, ease: 'power3.inOut' })
         .fromTo(next, { opacity: 0, yPercent: direction === 'down' ? 16 : -16, scale: direction === 'down' ? 1.06 : 0.96, filter: 'blur(14px)' }, { opacity: 1, yPercent: 0, scale: 1, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }, '-=0.3')
   }
@@ -112,7 +121,7 @@ onUnmounted(() => { observer?.kill(); if (keyDownHandler) window.removeEventList
       <section id="scene-0" class="cinema-scene active hero-scene">
         <div class="scene-orb orb-one"></div><div class="scene-orb orb-two"></div>
         <img class="product-float hero-printer" :src="productImages.printer" alt="چاپی فڵیکس" /><img class="product-float hero-awards" :src="productImages.awards" alt="کریستاڵ" /><img class="product-float hero-bags" :src="productImages.bags" alt="بەگ" /><img class="product-float hero-flags" :src="productImages.flags" alt="ئاڵا" /><img class="product-float hero-pens" :src="productImages.pens" alt="قەڵەم" />
-        <div class="scene-content hero-content"><p class="eyebrow animate-child">لە ٢٠١٥ ـەوە، لەگەڵ براندەکەت</p><h1 class="animate-child">بۆ ئەوەی <em>شاز</em><br />دەر بکەویت، شاز هەڵبژێرە</h1><p class="intro animate-child">چاپ، ڕیکلام و دیزاینی پڕۆفیشناڵ بۆ ئەو براندەی کە شایەنی بینرانە.</p><div class="animate-child hero-actions"><button @click="goToScene(1, 'down')">ببینە چی دەکەین <span>↓</span></button><a class="hero-phone-badge" href="tel:07701566553"><i>📞</i> 0770 156 6553</a></div></div><div class="scroll-cue">بۆ گەشتکردن <span></span></div>
+        <div class="scene-content hero-content"><p class="eyebrow animate-child">لە ٢٠١٥ ـەوە، لەگەڵ براندەکەت</p><h1 class="animate-child">بۆ ئەوەی <em>شاز</em><br />دەر بکەویت، شاز هەڵبژێرە</h1><p class="intro animate-child">چاپ، ڕیکلام و دیزاینی پڕۆفیشناڵ بۆ ئەو براندەی کە شایەنی بینرانە.</p><div class="animate-child hero-actions"><button @click="goToScene(1, 'down')">ببینە چی دەکەین <span>↓</span></button><a class="hero-phone-badge" href="tel:07701566553"><i>📞</i> 0770 156 6553</a></div></div>
       </section>
       <section id="scene-1" class="cinema-scene feature-scene format-scene"><div class="scene-content split-content"><div class="copy-panel"><p class="eyebrow animate-child">01 / LARGE FORMAT</p><h2 class="animate-child">قەبارەی گەورە،<br /><em>کاریگەری گەورە</em></h2><p class="intro animate-child">چاپی فڵیکس و حەرفی بارز بە ڕەنگی درەوشاوە و وردترین جزییات، بۆ ئەوەی نامەکەت لە هەر شوێنێک بێت.</p><div class="service-tags animate-child"><span>چاپی فڵیکس</span><span>حەرفی بارز</span><span>ساین بۆرد</span></div></div><div class="product-stage format-products"><div class="glow-ring"></div><img class="product-float format-printer" :src="productImages.printer" alt="پرێنتەر" /><img class="product-float format-sign" :src="productImages.sign" alt="ساین" /><img class="product-float format-brochure" :src="productImages.brochure" alt="ستاند" /><div class="metric animate-child"><b>+10</b><span>ساڵ ئەزموون</span></div></div></div></section>
       <section id="scene-2" class="cinema-scene feature-scene corporate-scene"><div class="scene-content split-content reverse"><div class="product-stage corporate-products"><div class="glow-ring"></div><img class="product-float corporate-awards" :src="productImages.awards" alt="کریستاڵ" /><img class="product-float corporate-ids" :src="productImages.ids" alt="ناسنامە" /><img class="product-float corporate-vest" :src="productImages.vests" alt="جلوبەرگ" /><img class="product-float corporate-shirt" :src="productImages.tshirt" alt="تەیشێرت" /></div><div class="copy-panel"><p class="eyebrow animate-child">02 / CORPORATE IDENTITY</p><h2 class="animate-child">براندێک کە<br /><em>بە تۆ دەناسرێتەوە</em></h2><p class="intro animate-child">لە وەسڵ و کارتی ناسنامە تا کریستاڵی ڕێزلێنان و جلوبەرگی تیمەکەت؛ هەموو وردەکارییەک لە ژێر یەک هێڵی دیزاین.</p><div class="service-tags animate-child"><span>ڕەچەتە و وەسڵ</span><span>ناسنامە</span><span>تەیشێرت</span></div></div></div></section>
