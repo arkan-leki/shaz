@@ -2,6 +2,8 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { gsap } from 'gsap'
 import { Observer } from 'gsap/Observer'
+import CircularNavigator from './components/CircularNavigator.vue'
+import MusicPlayer from './components/MusicPlayer.vue'
 
 gsap.registerPlugin(Observer)
 
@@ -118,5 +120,6 @@ onUnmounted(() => { observer?.kill(); if (keyDownHandler) window.removeEventList
       <section id="scene-4" class="cinema-scene contact-scene"><img class="product-float contact-trifold" :src="productImages.trifold" alt="بڕۆشور" /><img class="product-float contact-flags" :src="productImages.flags" alt="ئاڵا" /><div class="contact-card"><p class="eyebrow animate-child">04 / LET'S CREATE</p><h2 class="animate-child">ئامادەی شازکردنی<br /><em>براندەکەتین</em></h2><p class="animate-child">پڕۆژەکەت یان ئایدیاکەت پێمان بڵێ، بە بەرزترین کواڵیتی و گونجاوترین نرخ دەیکەین بە واقع.</p><div class="contact-actions animate-child"><a class="contact-number" href="tel:07701566553"><i>📞</i> 0770 156 6553</a><a class="contact-whatsapp" href="https://wa.me/9647701566553" target="_blank" rel="noopener">واتسئاپ / WhatsApp</a></div><div class="contact-meta animate-child"><div class="location-badge">کەلار - فەرمانبەران - شەقامی پەیمانگە</div><span>چاپخانەی شاز بۆ چاپ و ڕیکلام</span></div></div></section>
     </main>
     <nav class="dot-nav" aria-label="بەشەکانی ماڵپەڕ"><button v-for="(scene, index) in scenes" :key="scene.id" :class="{ selected: currentIndex === index }" :aria-label="scene.label" @click="goToScene(index, index > currentIndex ? 'down' : 'up')"><span></span><b>{{ String(index + 1).padStart(2, '0') }}</b></button></nav><div class="scene-count">{{ String(currentIndex + 1).padStart(2, '0') }} <span>/ 05</span></div>
+    <MusicPlayer />
   </div>
 </template>
