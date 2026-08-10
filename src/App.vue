@@ -22,6 +22,9 @@ const scenes = [
   { id: 'contact', label: 'پەیوەندی' }
 ]
 
+// per-scene animation variants (index-based). Options: 'fade', 'slide', 'zoom', 'float', 'flip'
+const animationVariants = ['fade', 'slide', 'zoom', 'float', 'flip']
+
 const productImages = {
   printer: '/products/printer.png', sign: '/products/sign-soran.png', brochure: '/products/brochure-roll.png',
   awards: '/products/display-awards.png', ids: '/products/id-cards.png', vests: '/products/vests.png',
@@ -46,10 +49,43 @@ function goToScene(index: number, direction: 'down' | 'up') {
   isAnimating.value = true
   gsap.set(next, { display: 'flex', zIndex: 2 })
   animateProducts(next)
-  gsap.timeline({ onComplete: () => { gsap.set(current, { display: 'none', clearProps: 'all' }); next.classList.add('active'); current.classList.remove('active'); currentIndex.value = index; isAnimating.value = false } })
-    .to(current, { opacity: 0, scale: direction === 'down' ? 0.92 : 1.06, filter: 'blur(14px)', duration: 0.62, ease: 'power3.inOut' })
-    .fromTo(next, { opacity: 0, yPercent: direction === 'down' ? 16 : -16, scale: direction === 'down' ? 1.06 : 0.96, filter: 'blur(14px)' }, { opacity: 1, yPercent: 0, scale: 1, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }, '-=0.3')
-    .fromTo(next.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power3.out' }, '-=0.6')
+  // choose variant based on scene index (fallback to 'fade')
+  const variant = animationVariants[index] || 'fade'
+  runSceneTransition(current, next, variant, direction, () => {
+    gsap.set(current, { display: 'none', clearProps: 'all' })
+    next.classList.add('active')
+    current.classList.remove('active')
+    currentIndex.value = index
+    isAnimating.value = false
+  })
+}
+
+function runSceneTransition(current: HTMLElement, next: HTMLElement, variant: string, direction: 'down' | 'up', onComplete: () => void) {
+  const tl = gsap.timeline({ onComplete })
+  switch (variant) {
+    case 'slide':
+      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, duration: 0.7, ease: 'power3.in' })
+        .fromTo(next, { yPercent: direction === 'down' ? 100 : -100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.85, ease: 'power4.out' }, '-=0.15')
+      break
+    case 'zoom':
+      tl.to(current, { opacity: 0, scale: direction === 'down' ? 0.9 : 1.12, duration: 0.55, ease: 'power2.inOut' })
+        .fromTo(next, { scale: direction === 'down' ? 1.12 : 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.9, ease: 'power4.out' }, '-=0.2')
+      break
+    case 'float':
+      tl.to(current, { opacity: 0, x: direction === 'down' ? -40 : 40, y: direction === 'down' ? -14 : 14, duration: 0.7, ease: 'sine.inOut' })
+        .fromTo(next, { opacity: 0, x: direction === 'down' ? 40 : -40, y: direction === 'down' ? 14 : -14 }, { opacity: 1, x: 0, y: 0, duration: 0.9, ease: 'power3.out' }, '-=0.4')
+      break
+    case 'flip':
+      tl.to(current, { rotationY: direction === 'down' ? 20 : -20, opacity: 0, duration: 0.6, transformOrigin: '50% 50%', ease: 'back.in' })
+        .fromTo(next, { rotationY: direction === 'down' ? -20 : 20, opacity: 0 }, { rotationY: 0, opacity: 1, duration: 0.8, ease: 'back.out' }, '-=0.25')
+      break
+    default:
+      // fade (existing behavior)
+      tl.to(current, { opacity: 0, scale: direction === 'down' ? 0.92 : 1.06, filter: 'blur(14px)', duration: 0.62, ease: 'power3.inOut' })
+        .fromTo(next, { opacity: 0, yPercent: direction === 'down' ? 16 : -16, scale: direction === 'down' ? 1.06 : 0.96, filter: 'blur(14px)' }, { opacity: 1, yPercent: 0, scale: 1, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }, '-=0.3')
+  }
+  // animate child elements for entrance
+  tl.fromTo(next.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power3.out' }, '-=0.45')
 }
 
 onMounted(() => {
