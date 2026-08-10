@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const isPlaying = ref(false)
 const audioEl = ref<HTMLAudioElement | null>(null)
@@ -17,7 +17,6 @@ const audioEl = ref<HTMLAudioElement | null>(null)
 function toggleMusic() {
   if (!audioEl.value) return
 
-  // Start playing on the first click
   if (audioEl.value.paused) {
     audioEl.value.play().catch(error => {
       console.error("Audio playback failed:", error);
@@ -28,6 +27,16 @@ function toggleMusic() {
     isPlaying.value = false;
   }
 }
+
+onMounted(() => {
+  if (!audioEl.value) return
+  audioEl.value.play().then(() => {
+    isPlaying.value = true
+  }).catch(() => {
+    // Browser blocked autoplay — user must click the button
+    isPlaying.value = false
+  })
+})
 </script>
 
 <style scoped>
