@@ -5,6 +5,9 @@ import { Observer } from 'gsap/Observer'
 
 gsap.registerPlugin(Observer)
 
+// Use GPU-accelerated transforms when possible for smoother animations
+gsap.config({ force3D: true })
+
 const currentIndex = ref(0)
 const isAnimating = ref(false)
 let observer: Observer | null = null
@@ -52,7 +55,8 @@ function goToScene(index: number, direction: 'down' | 'up') {
 onMounted(() => {
   const firstScene = document.querySelector<HTMLElement>('#scene-0')
   if (firstScene) { gsap.fromTo(firstScene.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, delay: 0.15, ease: 'power3.out' }); animateProducts(firstScene) }
-  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: true, onDown: () => goToScene(currentIndex.value - 1, 'up'), onUp: () => goToScene(currentIndex.value + 1, 'down') })
+  // allow native scrolling behavior where possible; Observer will still detect wheel/touch
+  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: false, onDown: () => goToScene(currentIndex.value - 1, 'up'), onUp: () => goToScene(currentIndex.value + 1, 'down') })
   keyDownHandler = (event: KeyboardEvent) => {
     if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(event.key)) goToScene(currentIndex.value + 1, 'down')
     if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(event.key)) goToScene(currentIndex.value - 1, 'up')
