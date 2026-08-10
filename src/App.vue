@@ -107,7 +107,7 @@ onUnmounted(() => { observer?.kill(); if (keyDownHandler) window.removeEventList
 <template>
   <div dir="rtl" class="cinema-shell">
     <div class="grain"></div>
-    <header class="site-header"><div class="brand-logo"><img src="/shaz-logo.png" alt="شاز — بۆ چاپ و دیزاین و ڕیکلام" /><span class="brand-word">شاز</span></div><a class="header-phone" href="tel:07701566553"><i></i>0770 156 6553</a></header>
+    <header class="site-header"><div class="brand-logo"><img src="/shaz-logo.png" alt="شاز — بۆ چاپ و دیزاین و ڕیکلام" /><span class="brand-word">Shaz Print</span></div><a class="header-phone" href="tel:07701566553"><i></i>0770 156 6553</a></header>
     <main class="scene-stage">
       <section id="scene-0" class="cinema-scene active hero-scene">
         <div class="scene-orb orb-one"></div><div class="scene-orb orb-two"></div>
