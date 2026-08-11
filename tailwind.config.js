@@ -3,7 +3,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        vazirmatn: ['Vazirmatn', 'sans-serif']
+        rabar: ['Rabar_041', 'Vazirmatn', 'sans-serif']
       },
       boxShadow: {
         soft: '0 25px 90px rgba(15, 23, 42, 0.4)'
