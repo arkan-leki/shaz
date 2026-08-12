@@ -16,6 +16,10 @@ let observer: Observer | null = null
 let keyDownHandler: ((event: KeyboardEvent) => void) | null = null
 let floatingTweens: gsap.core.Tween[] = []
 
+// Mobile uses "reels" navigation: swipe UP goes to the next scene, swipe DOWN to the
+// previous one. Desktop keeps conventional scrolling (down = next, up = previous).
+const isMobile = typeof window !== 'undefined' && (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window)
+
 // --- Input gating so page changes are reliable (one gesture = one page) ---
 // Extra time after a transition finishes during which leftover scroll/touch
 // momentum is ignored. Prevents a single fast flick/swipe from skipping pages.
@@ -80,10 +84,12 @@ function goToScene(index: number, direction: 'down' | 'up') {
   // Drop any leftover animation on these two scenes so a half-done transition
   // can never leave the page visually broken or stuck.
   gsap.killTweensOf([current, next])
-  gsap.set(next, { display: 'flex', zIndex: 2 })
+  const variant = isMobile ? 'reels' : animationVariants[index] || 'fade'
+  // Reels slides the outgoing scene on top (it slides away to reveal the next);
+  // cinematic variants put the incoming scene on top instead.
+  gsap.set(next, { display: 'flex', zIndex: variant === 'reels' ? 1 : 2 })
+  gsap.set(current, { zIndex: variant === 'reels' ? 2 : 1 })
   animateProducts(next)
-  // choose variant based on scene index (fallback to 'fade')
-  const variant = animationVariants[index] || 'fade'
   runSceneTransition(current, next, variant, direction, () => {
     gsap.set(current, { display: 'none', clearProps: 'all' })
     next.classList.add('active')
@@ -106,6 +112,12 @@ function goToScene(index: number, direction: 'down' | 'up') {
 function runSceneTransition(current: HTMLElement, next: HTMLElement, variant: string, direction: 'down' | 'up', onComplete: () => void) {
   const tl = gsap.timeline({ onComplete })
   switch (variant) {
+    case 'reels':
+      // Reels-style vertical snap: current slides out in the swipe direction,
+      // next slides in right behind it (like Instagram / TikTok Stories).
+      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, duration: 0.42, ease: 'power2.inOut' })
+        .fromTo(next, { yPercent: direction === 'down' ? 100 : -100, scale: 0.96, opacity: 0.4 }, { yPercent: 0, scale: 1, opacity: 1, duration: 0.5, ease: 'power3.out' }, '-=0.3')
+      break
     case 'shade':
       // paper pulls up like window shade
       tl.to(current, { yPercent: -100, duration: 0.5, ease: 'power2.inOut' })
@@ -143,8 +155,19 @@ function runSceneTransition(current: HTMLElement, next: HTMLElement, variant: st
 onMounted(() => {
   const firstScene = document.querySelector<HTMLElement>('#scene-0')
   if (firstScene) { gsap.fromTo(firstScene.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.06, duration: 0.5, delay: 0.1, ease: 'power3.out' }); animateProducts(firstScene) }
-  // allow native scrolling behavior where possible; Observer will still detect wheel/touch
-  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: true, onDown: () => goToScene(currentIndex.value + 1, 'down'), onUp: () => goToScene(currentIndex.value - 1, 'up'), onLeft: () => goToScene(currentIndex.value + 1, 'down'), onRight: () => goToScene(currentIndex.value - 1, 'up') })
+  // Reels-style navigation: on mobile, swipe UP → next, swipe DOWN → previous.
+  // Desktop keeps conventional scroll (down → next, up → previous).
+  observer = Observer.create({
+    target: window,
+    type: 'wheel,touch',
+    wheelSpeed: 1,
+    tolerance: 14,
+    preventDefault: true,
+    onDown: () => goToScene(currentIndex.value + (isMobile ? -1 : 1), isMobile ? 'up' : 'down'),
+    onUp: () => goToScene(currentIndex.value + (isMobile ? 1 : -1), isMobile ? 'down' : 'up'),
+    onLeft: () => goToScene(currentIndex.value + (isMobile ? -1 : 1), 'up'),
+    onRight: () => goToScene(currentIndex.value + (isMobile ? 1 : -1), 'down')
+  })
   keyDownHandler = (event: KeyboardEvent) => {
     if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(event.key)) goToScene(currentIndex.value + 1, 'down')
     if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(event.key)) goToScene(currentIndex.value - 1, 'up')
