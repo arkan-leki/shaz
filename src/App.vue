@@ -16,6 +16,32 @@ let observer: Observer | null = null
 let keyDownHandler: ((event: KeyboardEvent) => void) | null = null
 let floatingTweens: gsap.core.Tween[] = []
 
+// --- Input gating so page changes are reliable (one gesture = one page) ---
+// Extra time after a transition finishes during which leftover scroll/touch
+// momentum is ignored. Prevents a single fast flick/swipe from skipping pages.
+const POST_NAV_LOCK_MS = 400
+// Extra time after a transition STARTS before a fresh gesture is accepted,
+// so rapid input can never queue up multiple changes.
+const MIN_NAV_INTERVAL_MS = 500
+// Safety net: if a transition somehow never reports completion, force-release
+// the animation lock so the page can never get stuck / freeze.
+const SAFETY_MS = 1400
+let navLockedUntil = 0
+let lastNavStartedAt = 0
+let animSafetyTimer: number | null = null
+
+function isNavLocked() {
+  const now = performance.now()
+  return now < navLockedUntil || now - lastNavStartedAt < MIN_NAV_INTERVAL_MS
+}
+
+function clearAnimSafety() {
+  if (animSafetyTimer !== null) {
+    window.clearTimeout(animSafetyTimer)
+    animSafetyTimer = null
+  }
+}
+
 const scenes = [
   { id: 'hero', label: 'سەرەتا' },
   { id: 'printing', label: 'چاپخانە' },
@@ -38,17 +64,22 @@ function animateProducts(scene: Element) {
   floatingTweens.forEach((tween) => tween.kill())
   floatingTweens = []
   const products = Array.from(scene.querySelectorAll<HTMLElement>('.product-float'))
-  gsap.fromTo(products, { opacity: 0, scale: 0.82, y: 36, rotate: -2 }, { opacity: 1, scale: 1, y: 0, rotate: 0, duration: 0.85, stagger: 0.1, ease: 'power3.out' })
+  gsap.fromTo(products, { opacity: 0, scale: 0.82, y: 36, rotate: -2 }, { opacity: 1, scale: 1, y: 0, rotate: 0, duration: 0.45, stagger: 0.06, ease: 'power3.out' })
   products.forEach((product, index) => floatingTweens.push(gsap.to(product, { y: index % 2 ? -12 : 12, x: index % 3 === 0 ? 7 : -7, rotate: index % 2 ? 1.5 : -1.5, duration: 2.6 + index * 0.22, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: index * 0.08 })))
 }
 
 function goToScene(index: number, direction: 'down' | 'up') {
-  if (isAnimating.value || index === currentIndex.value || index < 0 || index >= scenes.length) return
+  if (isAnimating.value || isNavLocked() || index === currentIndex.value || index < 0 || index >= scenes.length) return
   const allScenes = Array.from(document.querySelectorAll<HTMLElement>('.cinema-scene'))
   const current = allScenes[currentIndex.value]
   const next = allScenes[index]
   if (!current || !next) return
   isAnimating.value = true
+  lastNavStartedAt = performance.now()
+  clearAnimSafety()
+  // Drop any leftover animation on these two scenes so a half-done transition
+  // can never leave the page visually broken or stuck.
+  gsap.killTweensOf([current, next])
   gsap.set(next, { display: 'flex', zIndex: 2 })
   animateProducts(next)
   // choose variant based on scene index (fallback to 'fade')
@@ -59,7 +90,17 @@ function goToScene(index: number, direction: 'down' | 'up') {
     current.classList.remove('active')
     currentIndex.value = index
     isAnimating.value = false
+    clearAnimSafety()
+    // absorb any leftover momentum from the same gesture
+    navLockedUntil = performance.now() + POST_NAV_LOCK_MS
   })
+  // Guarantee the app can never freeze if a transition is interrupted
+  animSafetyTimer = window.setTimeout(() => {
+    if (isAnimating.value) {
+      isAnimating.value = false
+      navLockedUntil = performance.now() + POST_NAV_LOCK_MS
+    }
+  }, SAFETY_MS)
 }
 
 function runSceneTransition(current: HTMLElement, next: HTMLElement, variant: string, direction: 'down' | 'up', onComplete: () => void) {
@@ -67,43 +108,43 @@ function runSceneTransition(current: HTMLElement, next: HTMLElement, variant: st
   switch (variant) {
     case 'shade':
       // paper pulls up like window shade
-      tl.to(current, { yPercent: -100, duration: 0.9, ease: 'power2.inOut' })
+      tl.to(current, { yPercent: -100, duration: 0.5, ease: 'power2.inOut' })
         .set(next, { yPercent: 0, opacity: 1 }, 0)
       break
     case 'drop':
       // paper falls from above and bounces
-      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, duration: 0.5, ease: 'power3.in' })
-        .fromTo(next, { yPercent: direction === 'down' ? -120 : 120, rotation: direction === 'down' ? 6 : -6 }, { yPercent: 0, rotation: 0, duration: 0.8, ease: 'bounce.out' }, '-=0.1')
+      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, duration: 0.3, ease: 'power3.in' })
+        .fromTo(next, { yPercent: direction === 'down' ? -120 : 120, rotation: direction === 'down' ? 6 : -6 }, { yPercent: 0, rotation: 0, duration: 0.5, ease: 'back.out(1.7)' }, '-=0.1')
       break
     case 'roll':
       // paper tumbles away, next rolls in
-      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, rotation: direction === 'down' ? 15 : -15, opacity: 0, duration: 0.65, ease: 'power3.in' })
-        .fromTo(next, { yPercent: direction === 'down' ? 100 : -100, rotation: direction === 'down' ? -12 : 12, scale: 0.9 }, { yPercent: 0, rotation: 0, scale: 1, duration: 0.9, ease: 'elastic.out(1,0.6)' }, '-=0.2')
+      tl.to(current, { yPercent: direction === 'down' ? -100 : 100, rotation: direction === 'down' ? 15 : -15, opacity: 0, duration: 0.4, ease: 'power3.in' })
+        .fromTo(next, { yPercent: direction === 'down' ? 100 : -100, rotation: direction === 'down' ? -12 : 12, scale: 0.9 }, { yPercent: 0, rotation: 0, scale: 1, duration: 0.55, ease: 'back.out(1.6)' }, '-=0.15')
       break
     case 'scatter':
       // items scatter/fall — current lifts up, next tumbles into place
-      tl.to(current, { yPercent: -60, scale: 0.85, opacity: 0, duration: 0.5, ease: 'power3.in' })
-        .fromTo(next, { yPercent: 80, rotation: -8, scale: 0.88, opacity: 0 }, { yPercent: 0, rotation: 0, scale: 1, opacity: 1, duration: 1, ease: 'elastic.out(1,0.5)' }, '-=0.15')
+      tl.to(current, { yPercent: -60, scale: 0.85, opacity: 0, duration: 0.32, ease: 'power3.in' })
+        .fromTo(next, { yPercent: 80, rotation: -8, scale: 0.88, opacity: 0 }, { yPercent: 0, rotation: 0, scale: 1, opacity: 1, duration: 0.55, ease: 'back.out(1.5)' }, '-=0.1')
       break
     case 'unfold':
       // paper unfolds — current folds up, next unfolds from center
-      tl.to(current, { scaleY: 0, transformOrigin: '50% 0%', opacity: 0, duration: 0.55, ease: 'power3.in' })
-        .fromTo(next, { scaleY: 0, transformOrigin: '50% 100%', opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.75, ease: 'power3.out' }, '-=0.15')
+      tl.to(current, { scaleY: 0, transformOrigin: '50% 0%', opacity: 0, duration: 0.35, ease: 'power3.in' })
+        .fromTo(next, { scaleY: 0, transformOrigin: '50% 100%', opacity: 0 }, { scaleY: 1, opacity: 1, duration: 0.5, ease: 'power3.out' }, '-=0.1')
       break
     default:
       // fade (fallback)
-      tl.to(current, { opacity: 0, scale: direction === 'down' ? 0.92 : 1.06, filter: 'blur(14px)', duration: 0.62, ease: 'power3.inOut' })
-        .fromTo(next, { opacity: 0, yPercent: direction === 'down' ? 16 : -16, scale: direction === 'down' ? 1.06 : 0.96, filter: 'blur(14px)' }, { opacity: 1, yPercent: 0, scale: 1, filter: 'blur(0px)', duration: 0.85, ease: 'power4.out' }, '-=0.3')
+      tl.to(current, { opacity: 0, scale: direction === 'down' ? 0.92 : 1.06, filter: 'blur(8px)', duration: 0.4, ease: 'power3.inOut' })
+        .fromTo(next, { opacity: 0, yPercent: direction === 'down' ? 16 : -16, scale: direction === 'down' ? 1.06 : 0.96, filter: 'blur(8px)' }, { opacity: 1, yPercent: 0, scale: 1, filter: 'blur(0px)', duration: 0.55, ease: 'power4.out' }, '-=0.25')
   }
   // animate child elements for entrance
-  tl.fromTo(next.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power3.out' }, '-=0.45')
+  tl.fromTo(next.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.05, duration: 0.35, ease: 'power3.out' }, '-=0.3')
 }
 
 onMounted(() => {
   const firstScene = document.querySelector<HTMLElement>('#scene-0')
-  if (firstScene) { gsap.fromTo(firstScene.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, delay: 0.15, ease: 'power3.out' }); animateProducts(firstScene) }
+  if (firstScene) { gsap.fromTo(firstScene.querySelectorAll('.animate-child'), { opacity: 0, y: 26 }, { opacity: 1, y: 0, stagger: 0.06, duration: 0.5, delay: 0.1, ease: 'power3.out' }); animateProducts(firstScene) }
   // allow native scrolling behavior where possible; Observer will still detect wheel/touch
-  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: false, onDown: () => goToScene(currentIndex.value - 1, 'up'), onUp: () => goToScene(currentIndex.value + 1, 'down'), onLeft: () => goToScene(currentIndex.value + 1, 'down'), onRight: () => goToScene(currentIndex.value - 1, 'up') })
+  observer = Observer.create({ target: window, type: 'wheel,touch', wheelSpeed: 1, tolerance: 14, preventDefault: true, onDown: () => goToScene(currentIndex.value + 1, 'down'), onUp: () => goToScene(currentIndex.value - 1, 'up'), onLeft: () => goToScene(currentIndex.value + 1, 'down'), onRight: () => goToScene(currentIndex.value - 1, 'up') })
   keyDownHandler = (event: KeyboardEvent) => {
     if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(event.key)) goToScene(currentIndex.value + 1, 'down')
     if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(event.key)) goToScene(currentIndex.value - 1, 'up')
@@ -112,13 +153,14 @@ onMounted(() => {
   // tap ripple — wave effect on nearby floating items
   const shell = document.querySelector('.cinema-shell')
   if (shell) {
-    shell.addEventListener('click', (e: MouseEvent) => {
+    shell.addEventListener('click', (e: Event) => {
+      const me = e as MouseEvent
       if (isAnimating.value) return
-      const target = e.target as HTMLElement
+      const target = me.target as HTMLElement
       if (target.closest('button, a, nav, .scroll-cue')) return
       const rect = shell.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+      const x = me.clientX - rect.left
+      const y = me.clientY - rect.top
       // create ripple
       const ripple = document.createElement('div')
       ripple.className = 'tap-ripple'
@@ -145,7 +187,7 @@ onMounted(() => {
     })
   }
 })
-onUnmounted(() => { observer?.kill(); if (keyDownHandler) window.removeEventListener('keydown', keyDownHandler); floatingTweens.forEach((tween) => tween.kill()) })
+onUnmounted(() => { observer?.kill(); clearAnimSafety(); if (keyDownHandler) window.removeEventListener('keydown', keyDownHandler); floatingTweens.forEach((tween) => tween.kill()) })
 </script>
 
 <template>
