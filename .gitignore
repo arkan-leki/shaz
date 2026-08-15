@@ -33,5 +33,8 @@ dist-ssr
 dist/
 .vite/
 
+# Cloudflare wrangler local state (dev-only, don't commit)
+.wrangler/
+
 # Testing
 coverage/
