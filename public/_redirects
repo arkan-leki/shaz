@@ -1,3 +1,0 @@
-# SPA fallback: any non-file route serves the app shell.
-# (Pages Functions at functions/api/* take priority over this rule for /api/*.)
-/*    /index.html   200
