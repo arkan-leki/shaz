@@ -1,6 +1,5 @@
 <template>
   <div class="music-player" :class="{ 'is-playing': isPlaying }">
-    <span v-if="!isPlaying" class="music-label">▶ بۆ مۆسیقا کرتە بکە</span>
     <button
       @click="toggleMusic"
       :class="{ 'is-playing': isPlaying }"
@@ -120,20 +119,6 @@ onUnmounted(() => {
   bottom: 20px;
   right: 20px;
   z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.music-label {
-  background: rgba(0, 86, 75, 0.92);
-  color: #fff;
-  font: 600 13px 'Rabar_041', 'Vazirmatn', sans-serif;
-  padding: 8px 14px;
-  border-radius: 999px;
-  box-shadow: 0 8px 24px rgba(0, 86, 75, 0.35);
-  white-space: nowrap;
-  animation: label-pulse 1.6s ease-in-out infinite;
 }
 
 button {
@@ -180,27 +165,10 @@ button.is-playing {
   }
 }
 
-/* Expands a soft ring outward to grab attention before it's tapped */
-@keyframes label-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  50% {
-    opacity: 0.85;
-    transform: translateX(-4px);
-  }
-}
-
 @media (max-width: 640px) {
   .music-player {
     bottom: 12px;
     right: 12px;
-    gap: 8px;
-  }
-  .music-label {
-    font-size: 12px;
-    padding: 7px 12px;
   }
   button {
     width: 54px;
