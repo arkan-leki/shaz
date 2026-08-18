@@ -9,10 +9,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const isPlaying = ref(false)
 const audioEl = ref<HTMLAudioElement | null>(null)
+let unlockHandler: (() => void) | null = null
+let firstInteractionFired = false
 
 function toggleMusic() {
   if (!audioEl.value) return
@@ -28,14 +30,47 @@ function toggleMusic() {
   }
 }
 
+function startMusic() {
+  if (!audioEl.value || isPlaying.value) return
+  audioEl.value.play().then(() => {
+    isPlaying.value = true
+  }).catch(error => {
+    // Browser still refused — keep waiting for the next interaction
+    console.warn("Audio autoplay blocked:", error)
+  })
+}
+
+function handleFirstInteraction() {
+  if (firstInteractionFired) return
+  firstInteractionFired = true
+  startMusic()
+}
+
 onMounted(() => {
   if (!audioEl.value) return
+
+  // On desktop, browsers usually allow autoplay.
   audioEl.value.play().then(() => {
     isPlaying.value = true
   }).catch(() => {
-    // Browser blocked autoplay — user must click the button
-    isPlaying.value = false
+    // Autoplay blocked (almost always on mobile). Browsers only allow
+    // audio with sound after a user gesture, so listen for the first
+    // tap/scroll/keypress anywhere on the page and start then.
+    firstInteractionFired = false
+    const events: (keyof WindowEventMap)[] = ['pointerdown', 'touchstart', 'touchend', 'keydown', 'scroll']
+    unlockHandler = () => handleFirstInteraction()
+    events.forEach(event => window.addEventListener(event, unlockHandler as EventListener, { once: true, passive: true }))
+    // Fallback: also try on the document so fast taps are not missed
+    document.addEventListener('pointerdown', unlockHandler as EventListener, { once: true, passive: true })
   })
+})
+
+onUnmounted(() => {
+  if (unlockHandler) {
+    window.removeEventListener('pointerdown', unlockHandler as EventListener)
+    document.removeEventListener('pointerdown', unlockHandler as EventListener)
+    unlockHandler = null
+  }
 })
 </script>
 
