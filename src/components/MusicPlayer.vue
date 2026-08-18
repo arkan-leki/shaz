@@ -8,7 +8,7 @@
       <span v-if="isPlaying">❚❚</span>
       <span v-else>►</span>
     </button>
-    <audio ref="audioEl" src="/background-music.mp3" loop></audio>
+    <audio ref="audioEl" src="/background-music.mp3"></audio>
   </div>
 </template>
 
@@ -89,8 +89,15 @@ function toggleMusic() {
   }
 }
 
+// When the track finishes (no loop), reset the button so it shows the play
+// icon and the user can tap to replay it.
+function handleEnded() {
+  isPlaying.value = false
+}
+
 onMounted(() => {
   if (!audioEl.value) return
+  audioEl.value.addEventListener('ended', handleEnded)
 
   // Desktop: attempt autoplay on load. This works when the browser allows it
   // (e.g. Chrome with media engagement, Firefox, Edge). If it's rejected we
@@ -110,6 +117,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   detachUnlockListeners()
+  if (audioEl.value) {
+    audioEl.value.removeEventListener('ended', handleEnded)
+  }
 })
 </script>
 
