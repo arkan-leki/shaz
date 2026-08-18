@@ -1,6 +1,11 @@
 <template>
-  <div class="music-player">
-    <button @click="toggleMusic" :class="{ 'is-playing': isPlaying }">
+  <div class="music-player" :class="{ 'is-playing': isPlaying }">
+    <span v-if="!isPlaying" class="music-label">▶ بۆ مۆسیقا کرتە بکە</span>
+    <button
+      @click="toggleMusic"
+      :class="{ 'is-playing': isPlaying }"
+      :aria-label="isPlaying ? 'Pause music' : 'Play music'"
+    >
       <span v-if="isPlaying">❚❚</span>
       <span v-else>►</span>
     </button>
@@ -13,8 +18,63 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const isPlaying = ref(false)
 const audioEl = ref<HTMLAudioElement | null>(null)
-let unlockHandler: (() => void) | null = null
-let firstInteractionFired = false
+
+let unlockHandler: ((() => void) | null) = null
+let unlockAttempts = 0
+
+function startMusic() {
+  if (!audioEl.value || isPlaying.value) return
+  const promise = audioEl.value.play()
+  if (promise) {
+    promise.then(() => {
+      isPlaying.value = true
+    }).catch(() => {
+      // Browser refused this gesture too — keep listeners alive; a later
+      // interaction is allowed to try again.
+    })
+  }
+}
+
+// Called on the FIRST user gesture anywhere on the page (tap, swipe/scroll,
+// click, key press). Mobile/desktop browsers only let audible audio start
+// inside a real user gesture, so this is the only reliable "autoplay".
+function handleFirstInteraction() {
+  if (isPlaying.value) return
+  // Retry a few times across gestures in case one play() call is rejected.
+  if (unlockAttempts < 5) {
+    unlockAttempts++
+    startMusic()
+  }
+}
+
+// Listen in the CAPTURE phase on both window and document so that even if the
+// GSAP observer or some handler calls preventDefault/stopPropagation on the
+// target, we still receive the very first touch/click anywhere on the page.
+function attachUnlockListeners() {
+  if (unlockHandler) return
+  unlockHandler = handleFirstInteraction
+  const opts: AddEventListenerOptions = { capture: true, passive: true }
+  const targets: (Window | Document)[] = [window, document]
+  const events: string[] = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'scroll', 'wheel']
+  targets.forEach(target => {
+    events.forEach(event => {
+      target.addEventListener(event, unlockHandler as EventListener, opts)
+    })
+  })
+}
+
+function detachUnlockListeners() {
+  if (!unlockHandler) return
+  const opts: AddEventListenerOptions = { capture: true, passive: true }
+  const targets: (Window | Document)[] = [window, document]
+  const events: string[] = ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'scroll', 'wheel']
+  targets.forEach(target => {
+    events.forEach(event => {
+      target.removeEventListener(event, unlockHandler as EventListener, opts)
+    })
+  })
+  unlockHandler = null
+}
 
 function toggleMusic() {
   if (!audioEl.value) return
@@ -30,47 +90,27 @@ function toggleMusic() {
   }
 }
 
-function startMusic() {
-  if (!audioEl.value || isPlaying.value) return
-  audioEl.value.play().then(() => {
-    isPlaying.value = true
-  }).catch(error => {
-    // Browser still refused — keep waiting for the next interaction
-    console.warn("Audio autoplay blocked:", error)
-  })
-}
-
-function handleFirstInteraction() {
-  if (firstInteractionFired) return
-  firstInteractionFired = true
-  startMusic()
-}
-
 onMounted(() => {
   if (!audioEl.value) return
 
-  // On desktop, browsers usually allow autoplay.
-  audioEl.value.play().then(() => {
-    isPlaying.value = true
-  }).catch(() => {
-    // Autoplay blocked (almost always on mobile). Browsers only allow
-    // audio with sound after a user gesture, so listen for the first
-    // tap/scroll/keypress anywhere on the page and start then.
-    firstInteractionFired = false
-    const events: (keyof WindowEventMap)[] = ['pointerdown', 'touchstart', 'touchend', 'keydown', 'scroll']
-    unlockHandler = () => handleFirstInteraction()
-    events.forEach(event => window.addEventListener(event, unlockHandler as EventListener, { once: true, passive: true }))
-    // Fallback: also try on the document so fast taps are not missed
-    document.addEventListener('pointerdown', unlockHandler as EventListener, { once: true, passive: true })
-  })
+  // Desktop: attempt autoplay on load. This works when the browser allows it
+  // (e.g. Chrome with media engagement, Firefox, Edge). If it's rejected we
+  // fall back to unlocking on the first user gesture below.
+  const promise = audioEl.value.play()
+  if (promise) {
+    promise.then(() => {
+      isPlaying.value = true
+    }).catch(() => {
+      // Autoplay blocked — start on the first tap/scroll/click anywhere.
+      attachUnlockListeners()
+    })
+  } else {
+    attachUnlockListeners()
+  }
 })
 
 onUnmounted(() => {
-  if (unlockHandler) {
-    window.removeEventListener('pointerdown', unlockHandler as EventListener)
-    document.removeEventListener('pointerdown', unlockHandler as EventListener)
-    unlockHandler = null
-  }
+  detachUnlockListeners()
 })
 </script>
 
@@ -80,31 +120,91 @@ onUnmounted(() => {
   bottom: 20px;
   right: 20px;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.music-label {
+  background: rgba(0, 86, 75, 0.92);
+  color: #fff;
+  font: 600 13px 'Rabar_041', 'Vazirmatn', sans-serif;
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 86, 75, 0.35);
+  white-space: nowrap;
+  animation: label-pulse 1.6s ease-in-out infinite;
 }
 
 button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #0f172a;
-  width: 50px;
-  height: 50px;
+  position: relative;
+  background: #00564b;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: #fff;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(10px);
-  transition: background 0.3s, transform 0.3s;
+  box-shadow: 0 0 0 0 rgba(0, 86, 75, 0.55), 0 10px 28px rgba(0, 86, 75, 0.45);
+  animation: glow-pulse 1.6s ease-in-out infinite;
+  transition: background 0.3s, transform 0.2s;
 }
 
 button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #006b5c;
   transform: scale(1.1);
 }
 
+button:active {
+  transform: scale(0.95);
+}
+
 button.is-playing {
-  background: rgba(0, 86, 75, 0.8);
-  color: white;
+  background: #00483f;
+  border-color: rgba(255, 255, 255, 0.9);
+  animation: none;
+  box-shadow: 0 8px 22px rgba(0, 86, 75, 0.35);
+}
+
+/* Pulsing glow so the play button stands out and draws the user's tap */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 86, 75, 0.55), 0 10px 28px rgba(0, 86, 75, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(0, 86, 75, 0), 0 10px 28px rgba(0, 86, 75, 0.45);
+  }
+}
+
+/* Expands a soft ring outward to grab attention before it's tapped */
+@keyframes label-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translateX(-4px);
+  }
+}
+
+@media (max-width: 640px) {
+  .music-player {
+    bottom: 12px;
+    right: 12px;
+    gap: 8px;
+  }
+  .music-label {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+  button {
+    width: 54px;
+    height: 54px;
+  }
 }
 </style>
