@@ -357,13 +357,14 @@ body {
   position: absolute;
   z-index: 2;
   object-fit: contain;
-  min-width: 150px;
+  min-width: 80px;
   filter: drop-shadow(0 18px 15px rgba(15, 23, 42, 0.15));
   user-select: none;
   pointer-events: none;
 }
 .hero-printer {
   width: min(24vw, 320px);
+  min-width: 200px;
   right: -1vw;
   top: 7%;
 }
@@ -371,9 +372,11 @@ body {
   width: min(20vw, 260px);
   left: 5vw;
   bottom: 10%;
+  min-width: 200px;
 }
 .hero-showroom {
   width: min(26vw, 320px);
+  min-width: 200px;
   left: -3vw;
   top: 16%;
 }
@@ -381,6 +384,7 @@ body {
   width: min(16vw, 210px);
   right: 0;
   bottom: 4%;
+  min-width: 200px;
 }
 .feature-scene {
   background: linear-gradient(135deg, #f7f5f0, #edf2ef);
