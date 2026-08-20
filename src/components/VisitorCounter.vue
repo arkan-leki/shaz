@@ -2,7 +2,7 @@
   <a class="visitor-counter" dir="rtl" href="tel:07701566553" :title="'شاز بۆ چاپ و ڕیکلام — سەردانیکەران'">
     <span class="visitor-dot" aria-hidden="true"></span>
     <span class="visitor-num">{{ count }}</span>
-    <span class="visitor-label">سەردان</span>
+    <span class="visitor-label">بینەر</span>
     <i class="visitor-sep" aria-hidden="true"></i>
     <span class="visitor-brand">شاز بۆ چاپ و ڕیکلام</span>
   </a>

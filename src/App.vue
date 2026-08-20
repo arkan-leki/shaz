@@ -49,15 +49,44 @@ const serviceDetails: Record<string, ServiceDetail> = {
     image: '/products/canvas.png',
     body: 'خانەمەیەکی هونەرییە، بۆ چاپی تابلۆ و دروستکردنی تابلۆ و هەندێک شوێن وەک پەردەی ڕیکلامی بەکاردەهێنرێت. ئێمە ئەزموونمان لە دروستکردنی تابلۆ و پەردەی ڕیکلامی هەیە، جگە لە کوالێتی بەرزی و چاپ و دیزاینی هونەری، چوارچێوەی تایبەت بە کانڤاسیش بۆ ئامادە دەکەین و دەیخەینە خزمەتی کڕیاران.'
   },
+  'چاپی ڕۆلاپ': {
+    title: 'چاپی ڕۆلاپ',
+    image: '/products/brochure-roll.png',
+    body: 'چاپی ڕۆلاپی تایبەت بە ڕیکلام و بۆنەکان، بە دیزاین و کوالێتی بەرز، بۆ دروستکردنی دەرکەوتنێکی سەرنجڕاکێش لە نمایشکان و پێشانگاکان.'
+  },
+  'چاپی ستاند': {
+    title: 'چاپی ستاند',
+    body: 'دروستکردن و چاپی ستاندی ڕیکلامی، بۆ مارکێت و پێشانگا و بۆنەکان، بە کەرەستەی بەهێز و دیزاینی سەرنجڕاکێش.'
+  },
+  'چاپی ستیکەر': {
+    title: 'چاپی ستیکەر',
+    body: 'چاپی ستیکەری ڕەنگاوی و نەخشەدار، بە کوالێتی بەرز و مانەوەی زۆر، بۆ براندینگ و ڕیکلام و بۆنەکان.'
+  },
+  'چاپی دەفتەر': {
+    title: 'چاپی دەفتەر',
+    body: 'چاپکردنی دەفتەر بۆ بۆنە و مەراسیمەکان، بە نەخشەی تایبەت بە براندەکەت و کوالێتی بەرز، وەک دیاری و باکێج.'
+  },
+  'چاپی وەسل': {
+    title: 'چاپی وەسل',
+    body: 'چاپی وەسڵ و ستیکەری تایبەت بە کۆمپانیا و براندەکان، بە دیزاین و کوالێتی بەرز.'
+  },
+  'پرۆشۆر': {
+    title: 'چاپی پرۆشۆر',
+    body: 'دیزاین و چاپی پرۆشۆر و بڕۆشور، بۆ کۆمپانیا و لایەنەکان، بە کاغەزی کوالێتی بەرز و دیزاینی پیشەیی.'
+  },
+  'چاپی تابلۆ': {
+    title: 'چاپی تابلۆ',
+    body: 'چاپی تابلۆی ڕیکلامی و تابلۆی دیوار، بە کوالێتی بەرز و مەوادی متمانەپێکراو، بۆ براندینگ و ڕیکلام.'
+  },
   'حەرفی بارز': {
     title: 'حەرفی بارز',
-    image: '/products/sign-soran.png',
+    image: '/products/sign-board.png',
     body: 'تابلۆی شوێنکار، بە تەکنیکی نوێ و کەرەستەی متمانەپێکراو و هونەرێکی گەورەی شارستانی لە شاردا دەکێشین، دەمانەوێت زۆر گەورە دەربکەیت، وا بێت لە یەکەم نیگادا چاوەکان بچێتە سەر براندەکەی تۆ.',
     note: 'نرخەکان بەپێی دیزاین و بەپێی خواستی داواکاری کڕیار دەگۆڕێت.'
   },
   'تابلۆی بازرگانی': {
     title: 'تابلۆی بازرگانی',
-    image: '/products/sign-board.png',
+    image: '/products/sign-soran.png',
     body: 'تابلۆکانی ئێمە تۆکمەن، شازن، متمانە پێکراون. تابلۆ بازرگانییەکان زیاتر گەورەییت پیشان دەدەن، ئەگەر جیاواز بن جیاواز دەردەکەویت، وە ئەگەر شاز بن شاز دەردەکەویت.',
     note: 'چاپخانەی شاز، ئامادەی ئەنجامدانی گرێبەستە لەگەڵ کۆمپانیا و لایەنە پەیوەندیدارەکان بە نرخی گونجاو و خزمەتی تەواو و جیاواز.'
   },
@@ -69,6 +98,7 @@ const serviceDetails: Record<string, ServiceDetail> = {
   },
   'شۆوڕووم و کۆشک': {
     title: 'شۆوڕووم و کۆشک',
+    image: '/products/show-room.png',
     body: 'لە پێشانگا و ئیڤێنت و فستیڤاڵەکاندا بۆ ئەوەی براندەکەت نایاب دەرکەوێت پێویستت بە کۆشکێکی پرشنگدار و شارستانی هەیە، کە گەورەییت دەربخات، بە کەرەستەی تایبەت و چاپی کوالێتی بەرز و ستافی شارەزا دەخرێتە خزمەتتان.',
     note: 'نرخ بەپێی کەرەستە و جۆری مەواد و قەبارە دەگۆڕێت.'
   },
@@ -171,10 +201,11 @@ const scenes = [
 const animationVariants = ['shade', 'roll', 'scatter', 'unfold', 'roll']
 
 const productImages = {
-  printer: '/products/printer.png', sign: '/products/sign-soran.png', board: '/products/sign-board.png', brochure: '/products/brochure-roll.png',
+  printer: '/products/printer.png', sign: '/products/sign-soran.png', showroom: '/products/show-room.png', board: '/products/sign-board.png', brochure: '/products/brochure-roll.png',
   awards: '/products/display-awards.png', ids: '/products/id-cards.png', vests: '/products/vests.png',
   tshirt: '/products/tshirt.png', flags: '/products/flags.png', bags: '/products/bags.png',
-  canvas: '/products/canvas.png', pens: '/products/pens-color.png', trifold: '/products/trifold.png'
+  canvas: '/products/canvas.png', pens: '/products/pens-color.png', trifold: '/products/trifold.png',
+  wasl: '/products/wasl w daftar.png'
 }
 
 function animateProducts(scene: Element) {
@@ -331,19 +362,138 @@ onUnmounted(() => { observer?.kill(); clearAnimSafety(); if (keyDownHandler) win
 <template>
   <div dir="rtl" class="cinema-shell">
     <div class="grain"></div>
-    <header class="site-header"><div class="brand-logo"><img src="/shaz-logo.png" alt="شاز — بۆ چاپ و ڕیکلام" /><span class="brand-word">Shaz Print</span></div><VisitorCounter /></header>
+    <header class="site-header">
+      <div class="brand-logo">
+        <img src="/shaz-logo.png" alt="شاز — بۆ چاپ و ڕیکلام" />
+        <span class="brand-word">Shaz print</span>
+      </div>
+      <VisitorCounter />
+    </header>
     <main class="scene-stage">
       <section id="scene-0" class="cinema-scene active hero-scene">
-        <div class="scene-orb orb-one"></div><div class="scene-orb orb-two"></div>
-        <img class="product-float hero-printer" :src="productImages.printer" alt="چاپی فڵیکس" /><img class="product-float hero-awards" :src="productImages.awards" alt="کریستاڵ" /><img class="product-float hero-bags" :src="productImages.bags" alt="بەگ" /><img class="product-float hero-flags" :src="productImages.flags" alt="ئاڵا" /><img class="product-float hero-pens" :src="productImages.pens" alt="قەڵەم" />
-        <div class="scene-content hero-content"><p class="eyebrow animate-child">ئێمە لە گەرمیانین</p><h1 class="animate-child">ڕێچکە شکێنین لە هەڵبژاردنی<br /><em>دیزاینی نوێ و جیاواز</em> و چاپی کوالێتی بەرز</h1><p class="intro animate-child">نوێگەری خەونمانە، جیاوازی و سەرکەوتنی زیاتری تۆش ئەرکمانە — دەکرێت.</p><div class="animate-child hero-actions"><button @click="goToScene(1, 'down')">ببینە چی دەکەین <span>↓</span></button><a class="hero-phone-badge" href="tel:07701566553"><i>📞</i> 0770 156 6553</a></div></div><div class="scroll-cue">→ راکێشە ← <span></span></div>
+        <div class="scene-orb orb-one"></div>
+        <div class="scene-orb orb-two"></div>
+        <img class="product-float hero-printer" :src="productImages.printer" alt="چاپی فڵیکس" />
+        <img class="product-float hero-board" :src="productImages.board" alt="تابلۆی بازرگانی" />
+        <img class="product-float hero-showroom" :src="productImages.showroom" alt="شۆوڕووم" />
+        <img class="product-float hero-flags" :src="productImages.flags" alt="ئاڵا" />
+        <div class="scene-content hero-content">
+          <p class="eyebrow animate-child">شاز بۆ چاپ و ڕیکلام</p>
+          <h1 class="animate-child">ڕێچکە شکێنین لە هەڵبژاردنی<br /><em>دیزاینی نوێ و جیاواز</em> و چاپی کوالێتی بەرز</h1>
+          <p class="intro animate-child">نوێگەری ئامانجمانە، جیاوازی و سەرکەوتنی ئێوەش ئەرکمانە</p>
+          <div class="animate-child hero-actions">
+            <button @click="goToScene(1, 'down')">ببینە چی دەکەین <span>↓</span></button>
+            <a class="hero-phone-badge" href="tel:07701566553"><i>📞</i> 0770 156 6553</a>
+          </div>
+        </div>
+        <div class="scroll-cue">→ راکێشە ← <span></span></div>
       </section>
-      <section id="scene-1" class="cinema-scene feature-scene format-scene"><div class="scene-content split-content"><div class="copy-panel"><p class="eyebrow animate-child">01 / PRINTING</p><h2 class="animate-child">بەشی چاپخانە</h2><p class="intro animate-child">ئێمە لە چاپخانەی شاز گرنگی بە دەرکەوتنی تۆ دەدەین: لە دیزاینێکی سەرنجڕاکێش، چاپکردن بە کوالێتی بەرز، دانان و دروستکردن لە ڕێگەی تیمێکی خێرا و بە ئەزموون.</p><div class="service-tags animate-child"><button class="service-bubble" @click="openService('چاپی فلێکس')">چاپی فلێکس</button><button class="service-bubble" @click="openService('چاپی لەزگە')">چاپی لەزگە</button><button class="service-bubble" @click="openService('چاپی مێش')">چاپی مێش</button><button class="service-bubble" @click="openService('چاپی کانڤاس')">چاپی کانڤاس</button></div></div><div class="product-stage format-products"><div class="glow-ring"></div><img class="product-float format-printer" :src="productImages.printer" alt="پرێنتەر" /><img class="product-float format-canvas" :src="productImages.canvas" alt="چاپی کانڤاس" /><img class="product-float format-trifold" :src="productImages.trifold" alt="بڕۆشور" /><div class="metric animate-child"><b>+10</b><span>ساڵ ئەزموون</span></div></div></div></section>
-      <section id="scene-2" class="cinema-scene feature-scene corporate-scene"><div class="scene-content split-content reverse"><div class="product-stage corporate-products"><div class="glow-ring"></div><img class="product-float sign-main" :src="productImages.sign" alt="حەرفی بارز" /><img class="product-float sign-board" :src="productImages.board" alt="تابلۆی بازرگانی" /><img class="product-float sign-stand" :src="productImages.brochure" alt="ستاندی ڕیکلامی" /></div><div class="copy-panel"><p class="eyebrow animate-child">02 / SIGNS & ADVERTISING</p><h2 class="animate-child">بەشی حەرفی بارز<br /><em>و ڕیکلام</em></h2><p class="intro animate-child">دروستکردنی حەرفی بارز و تابلۆی بازرگانی، ڕەفەی ڕیکلامی تایبەت بە براندەکەت، ستاندی ڕیکلامی لە هەموو قەبارەکاندا، تابلۆی ڕیکلامی ڕێنیشاندەر و شۆوڕووم و کۆشک.</p><div class="service-tags animate-child"><button class="service-bubble" @click="openService('حەرفی بارز')">حەرفی بارز</button><button class="service-bubble" @click="openService('تابلۆی بازرگانی')">تابلۆی بازرگانی</button><button class="service-bubble" @click="openService('ستاندی ڕیکلامی')">ستاندی ڕیکلامی</button><button class="service-bubble" @click="openService('شۆوڕووم و کۆشک')">شۆوڕووم و کۆشک</button></div></div></div></section>
-      <section id="scene-3" class="cinema-scene feature-scene merchandise-scene"><div class="scene-content split-content"><div class="copy-panel"><p class="eyebrow animate-child">03 / BRANDING & GIFTS</p><h2 class="animate-child">پێداویستی براندینگ<br /><em>و دیاری</em></h2><p class="intro animate-child">چاپی تیشێرتی تیم، بزنس کارت، چاپی زەرف، ڕێزلێنانی تەختە و کریستال و جلد، دروستکردنی ئاڵا و سەرمێز، پێداویستی ئۆفیس، ڕەچەتە، وەسڵ، چاپی سکرین، کوپ، چاپی قەڵەم و چاپی ستیکەر.</p><div class="service-tags animate-child"><button class="service-bubble" @click="openService('تیشێرت')">تیشێرت</button><button class="service-bubble" @click="openService('بزنس کارت')">بزنس کارت</button><button class="service-bubble" @click="openService('ئاڵا و سەرمێز')">ئاڵا و سەرمێز</button><button class="service-bubble" @click="openService('کریستال و جلد')">کریستال و جلد</button><button class="service-bubble" @click="openService('ستیکەر')">ستیکەر</button></div></div><div class="product-stage merchandise-products"><div class="glow-ring"></div><img class="product-float merchandise-shirt" :src="productImages.tshirt" alt="تیشێرت" /><img class="product-float merchandise-awards" :src="productImages.awards" alt="کریستال و جلد" /><img class="product-float merchandise-vests" :src="productImages.vests" alt="جلوبەرگ" /><img class="product-float merchandise-ids" :src="productImages.ids" alt="ناسنامە" /><img class="product-float merchandise-flags" :src="productImages.flags" alt="ئاڵا و سەرمێز" /></div></div></section>
-      <section id="scene-4" class="cinema-scene contact-scene"><img class="product-float contact-trifold" :src="productImages.trifold" alt="بڕۆشور" /><img class="product-float contact-flags" :src="productImages.flags" alt="ئاڵا" /><div class="contact-card"><p class="eyebrow animate-child">04 / LET'S CREATE</p><h2 class="animate-child">بۆ ئەوەی شاز دەرکەویت،<br /><em>شاز هەڵبژێرە</em></h2><p class="animate-child">پڕۆژەکەت یان ئایدیاکەت پێمان بڵێ، بە بەرزترین کواڵیتی و گونجاوترین نرخ دەیکەینە واقع.</p><div class="contact-actions animate-child"><a class="contact-number" href="tel:07701566553"><i>📞</i> 0770 156 6553</a><a class="contact-number contact-number--alt" href="tel:07761051515"><i>📱</i> 0776 105 1515</a><a class="social-link social-email" href="mailto:shazprintt@gmail.com" aria-label="ئیمەیڵ"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M22 6.5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-11ZM4 6.5l8 5 8-5v1.5l-8 5-8-5V6.5Z"/></svg><span>shazprintt@gmail.com</span></a><a class="social-link social-whatsapp" href="https://wa.me/9647701566553" target="_blank" rel="noopener" aria-label="واتسئاپ"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.94L2 22l5.2-1.5A9.9 9.9 0 1 0 12.04 2Zm0 18.13a8.16 8.16 0 0 1-4.16-1.14l-.3-.18-3.09.89.9-3.01-.2-.3a8.16 8.16 0 1 1 6.85 3.74Zm4.47-6.11c-.24-.12-1.44-.71-1.66-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.44-1.35-1.68-.14-.24-.02-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.69 2.58 4.1 3.62.57.25 1.02.39 1.37.5.57.18 1.1.16 1.51.1.46-.07 1.44-.59 1.64-1.16.2-.57.2-1.05.14-1.16-.06-.1-.22-.16-.46-.28Z"/></svg><span>واتسئاپ</span></a></div><div class="contact-socials animate-child"><a class="social-link social-facebook" href="https://www.facebook.com/share/1bUfBfM1ui/" target="_blank" rel="noopener" aria-label="فەیسبووک"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.52 1.5-3.91 3.78-3.91 1.09 0 2.24.2 2.24.2v2.47H15.2c-1.24 0-1.63.77-1.63 1.57v1.88h2.78l-.45 2.9h-2.33V22c4.78-.76 8.44-4.92 8.44-9.94Z"/></svg><span>فەیسبووک</span></a><a class="social-link social-instagram" href="https://www.instagram.com/shaz_printt?igsh=ZDJpczhtZGdvZmtn" target="_blank" rel="noopener" aria-label="ئینستاگرام"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.2 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85C2.42 3.94 3.94 2.42 7.15 2.27 8.42 2.21 8.8 2.2 12 2.2Zm0 3.1a6.7 6.7 0 1 0 0 13.4 6.7 6.7 0 0 0 0-13.4Zm0 2.2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Zm7.1-.35a1.57 1.57 0 1 1-3.14 0 1.57 1.57 0 0 1 3.14 0Z"/></svg><span>ئینستاگرام</span></a><a class="social-link social-tiktok" href="https://www.tiktok.com/@shazprint?_r=1&_t=ZS-98pN8KxR0bw" target="_blank" rel="noopener" aria-label="تیک تۆک"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.77a5.76 5.76 0 0 0-.78-.05 5.66 5.66 0 1 0 5.66 5.66V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.28 4.28 0 0 1-3.22-1.48Z"/></svg><span>تیک تۆک</span></a></div><div class="contact-meta animate-child"><div class="location-badge">ئۆفیسی سەرەکی — کەلار، ناو بازار · فەرعی: بەرامبەر گەراجی شەهیدان</div><span>چاپخانەی شاز بۆ چاپ و ڕیکلام</span></div></div></section>
+      <section id="scene-1" class="cinema-scene feature-scene format-scene">
+        <div class="scene-content split-content">
+          <div class="copy-panel">
+            <p class="eyebrow animate-child">01 / PRINTING</p>
+            <h2 class="animate-child">بەشی چاپخانە</h2>
+            <p class="intro animate-child">ئێمە لە چاپخانەی شاز گرنگی بە دەرکەوتنی تۆ دەدەین لە ڕێگەی بیرۆکەی نایاب و دیزاینێکی سەرنجڕاکێش، چاپکردن بە کوالێتی بەرز، دانان و دروستکردن لە ڕێگەی تیمێکی خێرا و بە ئەزموون.</p>
+            <div class="service-tags animate-child">
+              <button class="service-bubble" @click="openService('چاپی فلێکس')">چاپی فلێکس</button>
+              <button class="service-bubble" @click="openService('چاپی لەزگە')">چاپی لەزگە</button>
+              <button class="service-bubble" @click="openService('چاپی مێش')">چاپی مێش</button>
+              <button class="service-bubble" @click="openService('چاپی کانڤاس')">چاپی کانڤاس</button>
+              <button class="service-bubble" @click="openService('چاپی ڕۆلاپ')">چاپی ڕۆلاپ</button>
+              <button class="service-bubble" @click="openService('چاپی ستاند')">چاپی ستاند</button>
+              <button class="service-bubble" @click="openService('چاپی ستیکەر')">چاپی ستیکەر</button>
+              <button class="service-bubble" @click="openService('چاپی دەفتەر')">چاپی دەفتەر</button>
+              <button class="service-bubble" @click="openService('چاپی وەسل')">چاپی وەسل</button>
+              <button class="service-bubble" @click="openService('بزنس کارت')">بزنس کارت</button>
+              <button class="service-bubble" @click="openService('پرۆشۆر')">پرۆشۆر</button>
+              <button class="service-bubble" @click="openService('چاپی تابلۆ')">چاپی تابلۆ</button>
+            </div>
+          </div>
+          <div class="product-stage format-products">
+            <div class="glow-ring"></div>
+            <img class="product-float format-printer" :src="productImages.printer" alt="پرێنتەر" />
+            <img class="product-float format-wasl" :src="productImages.canvas" alt="چاپی کانڤاس" />
+            <img class="product-float format-canvas" :src="productImages.wasl" alt="چاپی وەسل و دەفتەر" />
+            <!-- <img class="product-float format-rolab" :src="productImages.brochure" alt="چاپی ڕۆلاپ" /> -->
+            <img class="product-float format-trifold" :src="productImages.trifold" alt="بڕۆشور" />
+          </div>
+        </div>
+      </section>
+      <section id="scene-2" class="cinema-scene feature-scene corporate-scene">
+        <div class="scene-content split-content reverse">
+          <div class="product-stage corporate-products">
+            <div class="glow-ring"></div>
+            <img class="product-float sign-main" :src="productImages.sign" alt="حەرفی بارز" />
+            <img class="product-float sign-board" :src="productImages.board" alt="تابلۆی بازرگانی" />
+            <img class="product-float sign-showroom" :src="productImages.showroom" alt="شۆوڕووم و کۆشک" />
+            <img class="product-float sign-stand" :src="productImages.brochure" alt="ستاندی ڕیکلامی" />
+          </div>
+          <div class="copy-panel">
+            <p class="eyebrow animate-child">02 / SIGNS & ADVERTISING</p>
+            <h2 class="animate-child">بەشی حەرفی بارز<br /><em>و ڕیکلام</em></h2>
+            <p class="intro animate-child">دروستکردنی حەرفی بارز و تابلۆی بازرگانی، ڕەفەی ڕیکلامی تایبەت بە براندەکەت، ستاندی ڕیکلامی لە هەموو قەبارەکاندا، تابلۆی ڕیکلامی ڕێنیشاندەر و شۆوڕووم و کۆشک.</p>
+            <div class="service-tags animate-child">
+              <button class="service-bubble" @click="openService('حەرفی بارز')">حەرفی بارز</button>
+              <button class="service-bubble" @click="openService('تابلۆی بازرگانی')">تابلۆی بازرگانی</button>
+              <button class="service-bubble" @click="openService('ستاندی ڕیکلامی')">ستاندی ڕیکلامی</button>
+              <button class="service-bubble" @click="openService('شۆوڕووم و کۆشک')">شۆوڕووم و کۆشک</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="scene-3" class="cinema-scene feature-scene merchandise-scene">
+        <div class="scene-content split-content">
+          <div class="copy-panel">
+            <p class="eyebrow animate-child">03 / BRANDING & GIFTS</p>
+            <h2 class="animate-child">پێداویستی براندینگ<br /><em>و دیاری</em></h2>
+            <p class="intro animate-child">چاپی تیشێرتی تیم، بزنس کارت، چاپی زەرف، ڕێزلێنانی تەختە و کریستال و جلد، دروستکردنی ئاڵا و سەرمێز، پێداویستی ئۆفیس، ڕەچەتە، وەسڵ، چاپی سکرین، کوپ، چاپی قەڵەم و چاپی ستیکەر.</p>
+            <div class="service-tags animate-child">
+              <button class="service-bubble" @click="openService('تیشێرت')">تیشێرت</button>
+              <button class="service-bubble" @click="openService('بزنس کارت')">بزنس کارت</button>
+              <button class="service-bubble" @click="openService('ئاڵا و سەرمێز')">ئاڵا و سەرمێز</button>
+              <button class="service-bubble" @click="openService('کریستال و جلد')">کریستال و جلد</button>
+              <button class="service-bubble" @click="openService('ستیکەر')">ستیکەر</button>
+            </div>
+          </div>
+          <div class="product-stage merchandise-products">
+            <div class="glow-ring"></div>
+            <img class="product-float merchandise-shirt" :src="productImages.tshirt" alt="تیشێرت" />
+            <img class="product-float merchandise-awards" :src="productImages.awards" alt="کریستال و جلد" />
+            <img class="product-float merchandise-vests" :src="productImages.vests" alt="جلوبەرگ" />
+            <img class="product-float merchandise-ids" :src="productImages.ids" alt="ناسنامە" />
+            <img class="product-float merchandise-flags" :src="productImages.flags" alt="ئاڵا و سەرمێز" />
+          </div>
+        </div>
+      </section>
+      <section id="scene-4" class="cinema-scene contact-scene">
+        <img class="product-float contact-trifold" :src="productImages.trifold" alt="بڕۆشور" />
+        <img class="product-float contact-flags" :src="productImages.flags" alt="ئاڵا" />
+        <div class="contact-card">
+          <p class="eyebrow animate-child">04 / LET'S CREATE</p>
+          <h2 class="animate-child">بۆ ئەوەی شاز دەرکەویت،<br /><em>شاز هەڵبژێرە</em></h2>
+          <p class="animate-child">پڕۆژەکەت یان ئایدیاکەت پێمان بڵێ، بە بەرزترین کواڵیتی و گونجاوترین نرخ دەیکەینە واقع.</p>
+          <div class="contact-actions animate-child">
+            <a class="contact-number" href="tel:07701566553"><i>📞</i> 0770 156 6553</a>
+            <a class="contact-number contact-number--alt" href="tel:07761051515"><i>📱</i> 0776 105 1515</a>
+            <a class="social-link social-email" href="mailto:shazprintt@gmail.com" aria-label="ئیمەیڵ"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M22 6.5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-11ZM4 6.5l8 5 8-5v1.5l-8 5-8-5V6.5Z"/></svg><span>shazprintt@gmail.com</span></a>
+            <a class="social-link social-whatsapp" href="https://wa.me/9647701566553" target="_blank" rel="noopener" aria-label="واتسئاپ"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.94L2 22l5.2-1.5A9.9 9.9 0 1 0 12.04 2Zm0 18.13a8.16 8.16 0 0 1-4.16-1.14l-.3-.18-3.09.89.9-3.01-.2-.3a8.16 8.16 0 1 1 6.85 3.74Zm4.47-6.11c-.24-.12-1.44-.71-1.66-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.44-1.35-1.68-.14-.24-.02-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.69 2.58 4.1 3.62.57.25 1.02.39 1.37.5.57.18 1.1.16 1.51.1.46-.07 1.44-.59 1.64-1.16.2-.57.2-1.05.14-1.16-.06-.1-.22-.16-.46-.28Z"/></svg><span>واتسئاپ</span></a>
+          </div>
+          <div class="contact-socials animate-child">
+            <a class="social-link social-facebook" href="https://www.facebook.com/share/1bUfBfM1ui/" target="_blank" rel="noopener" aria-label="فەیسبووک"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.52 1.5-3.91 3.78-3.91 1.09 0 2.24.2 2.24.2v2.47H15.2c-1.24 0-1.63.77-1.63 1.57v1.88h2.78l-.45 2.9h-2.33V22c4.78-.76 8.44-4.92 8.44-9.94Z"/></svg><span>فەیسبووک</span></a>
+            <a class="social-link social-instagram" href="https://www.instagram.com/shaz_printt?igsh=ZDJpczhtZGdvZmtn" target="_blank" rel="noopener" aria-label="ئینستاگرام"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.2 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85C2.42 3.94 3.94 2.42 7.15 2.27 8.42 2.21 8.8 2.2 12 2.2Zm0 3.1a6.7 6.7 0 1 0 0 13.4 6.7 6.7 0 0 0 0-13.4Zm0 2.2a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Zm7.1-.35a1.57 1.57 0 1 1-3.14 0 1.57 1.57 0 0 1 3.14 0Z"/></svg><span>ئینستاگرام</span></a>
+            <a class="social-link social-tiktok" href="https://www.tiktok.com/@shazprint?_r=1&_t=ZS-98pN8KxR0bw" target="_blank" rel="noopener" aria-label="تیک تۆک"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.77a5.76 5.76 0 0 0-.78-.05 5.66 5.66 0 1 0 5.66 5.66V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.28 4.28 0 0 1-3.22-1.48Z"/></svg><span>تیک تۆک</span></a>
+          </div>
+          <div class="contact-meta animate-child">
+            <div class="location-badge">ئۆفیسی سەرەکی — کەلار، ناو بازار · فەرعی: بەرامبەر گەراجی شەهیدان</div>
+            <span>چاپخانەی شاز بۆ چاپ و ڕیکلام</span>
+          </div>
+        </div>
+      </section>
     </main>
-    <nav class="dot-nav" aria-label="بەشەکانی ماڵپەڕ"><button v-for="(scene, index) in scenes" :key="scene.id" :class="{ selected: currentIndex === index }" :aria-label="scene.label" @click="goToScene(index, index > currentIndex ? 'down' : 'up')"><span></span><b>{{ String(index + 1).padStart(2, '0') }}</b></button></nav><div class="scene-count">{{ String(currentIndex + 1).padStart(2, '0') }} <span>/ 05</span></div>
+    <nav class="dot-nav" aria-label="بەشەکانی ماڵپەڕ">
+      <button v-for="(scene, index) in scenes" :key="scene.id" :class="{ selected: currentIndex === index }" :aria-label="scene.label" @click="goToScene(index, index > currentIndex ? 'down' : 'up')"><span></span><b>{{ String(index + 1).padStart(2, '0') }}</b></button>
+    </nav>
+    <div class="scene-count">{{ String(currentIndex + 1).padStart(2, '0') }} <span>/ 05</span></div>
     <MusicPlayer />
     <div v-if="activeService" class="service-modal" @click.self="closeService">
       <button class="service-modal-close" aria-label="داخستن" @click="closeService">✕</button>
