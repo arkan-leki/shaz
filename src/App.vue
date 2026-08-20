@@ -22,7 +22,6 @@ interface ServiceDetail {
   title: string
   body: string
   note?: string
-  image?: string
 }
 const activeService = ref<ServiceDetail | null>(null)
 
@@ -30,7 +29,6 @@ const activeService = ref<ServiceDetail | null>(null)
 const serviceDetails: Record<string, ServiceDetail> = {
   'چاپی فلێکس': {
     title: 'چاپی فلێکس',
-    image: '/products/printer.png',
     body: 'مەراسیم و بۆنەکان: ئێمە لە چاپخانەی شاز ئەزموونی ئامادەکردنی دیکۆر و شۆوڕوومی بۆنە و مەراسیمەکانمان هەیە، وەک دیزاین و چاپکردن و ئامادەکردنی دیکۆر، ئامادەکردنی ستەیج و سەرجەم پێداویستی مەراسیم کە خۆی دەبینێتەوە لە باکێجی (دەفتەر، قەڵەم، نۆتبوک، فایل، پرۆشۆر، مەدالیا، ڕێزلێنان).',
     note: 'ئۆفەری تایبەت و داشکاندنی تایبەت بۆ ئەو لایەن و شوێنانە کراوە کە سەرجەم پێداویستییەکانی مەراسیمەکە بە شاز دەسپێرن.'
   },
@@ -46,12 +44,10 @@ const serviceDetails: Record<string, ServiceDetail> = {
   },
   'چاپی کانڤاس': {
     title: 'چاپی کانڤاس',
-    image: '/products/canvas.png',
     body: 'خانەمەیەکی هونەرییە، بۆ چاپی تابلۆ و دروستکردنی تابلۆ و هەندێک شوێن وەک پەردەی ڕیکلامی بەکاردەهێنرێت. ئێمە ئەزموونمان لە دروستکردنی تابلۆ و پەردەی ڕیکلامی هەیە، جگە لە کوالێتی بەرزی و چاپ و دیزاینی هونەری، چوارچێوەی تایبەت بە کانڤاسیش بۆ ئامادە دەکەین و دەیخەینە خزمەتی کڕیاران.'
   },
   'چاپی ڕۆلاپ': {
     title: 'چاپی ڕۆلاپ',
-    image: '/products/brochure-roll.png',
     body: 'چاپی ڕۆلاپی تایبەت بە ڕیکلام و بۆنەکان، بە دیزاین و کوالێتی بەرز، بۆ دروستکردنی دەرکەوتنێکی سەرنجڕاکێش لە نمایشکان و پێشانگاکان.'
   },
   'چاپی ستاند': {
@@ -80,46 +76,38 @@ const serviceDetails: Record<string, ServiceDetail> = {
   },
   'حەرفی بارز': {
     title: 'حەرفی بارز',
-    image: '/products/sign-board.png',
     body: 'تابلۆی شوێنکار، بە تەکنیکی نوێ و کەرەستەی متمانەپێکراو و هونەرێکی گەورەی شارستانی لە شاردا دەکێشین، دەمانەوێت زۆر گەورە دەربکەیت، وا بێت لە یەکەم نیگادا چاوەکان بچێتە سەر براندەکەی تۆ.',
     note: 'نرخەکان بەپێی دیزاین و بەپێی خواستی داواکاری کڕیار دەگۆڕێت.'
   },
   'تابلۆی بازرگانی': {
     title: 'تابلۆی بازرگانی',
-    image: '/products/sign-soran.png',
     body: 'تابلۆکانی ئێمە تۆکمەن، شازن، متمانە پێکراون. تابلۆ بازرگانییەکان زیاتر گەورەییت پیشان دەدەن، ئەگەر جیاواز بن جیاواز دەردەکەویت، وە ئەگەر شاز بن شاز دەردەکەویت.',
     note: 'چاپخانەی شاز، ئامادەی ئەنجامدانی گرێبەستە لەگەڵ کۆمپانیا و لایەنە پەیوەندیدارەکان بە نرخی گونجاو و خزمەتی تەواو و جیاواز.'
   },
   'ستاندی ڕیکلامی': {
     title: 'ستاندی ڕیکلامی',
-    image: '/products/brochure-roll.png',
     body: 'ڕووپۆشکردنی ڕەفە و ستاند بە پێکهاتەی تەختە و فوم و پلاستیک و لید و ڕووپۆشکردنی بە ناوی ڕیکلامی براندەکەت، یان بەرهەمەکەت، مارکێتەکان دەنەخشێت، وا دەکات لەو ڕێگەیەوە بەرهەمەکەت لە هەموو کوچەیەکدا بەرز بێت. شاز بە کوالێتی بەرز بە تیمێکی شارەزا ستاندی تایبەت دروست دەکات، ئەزموونی زۆر و تایبەتی لەو بوارەدا هەیە.',
     note: 'نرخی ستاندەکان بەپێی قەبارە، کەرەستە و بڕ دەگۆڕێت.'
   },
   'شۆوڕووم و کۆشک': {
     title: 'شۆوڕووم و کۆشک',
-    image: '/products/show-room.png',
     body: 'لە پێشانگا و ئیڤێنت و فستیڤاڵەکاندا بۆ ئەوەی براندەکەت نایاب دەرکەوێت پێویستت بە کۆشکێکی پرشنگدار و شارستانی هەیە، کە گەورەییت دەربخات، بە کەرەستەی تایبەت و چاپی کوالێتی بەرز و ستافی شارەزا دەخرێتە خزمەتتان.',
     note: 'نرخ بەپێی کەرەستە و جۆری مەواد و قەبارە دەگۆڕێت.'
   },
   'تیشێرت': {
     title: 'چاپی تیشێرت',
-    image: '/products/tshirt.png',
     body: 'چاپی تیشێرتی تیم و جلوبەرگ بە کوالێتی بەرز و نەخشەی تایبەت، بۆ تیمەکان و کۆمپانیا و بۆنەکان. دیزاین و چاپ بە مەوادی متمانەپێکراو کە مانەوەی بۆ ماوەیەکی زۆر هەیە.'
   },
   'بزنس کارت': {
     title: 'بزنس کارت',
-    image: '/products/id-cards.png',
     body: 'دیزاین و چاپی بزنس کارتی شاز و جیاواز، بە کاغەزی کوالێتی بەرز و چاپی ڕەنگاوی، بۆ ئەوەی براندەکەت بە شێوەیەکی پیشەیی دەربکەوێت.'
   },
   'ئاڵا و سەرمێز': {
     title: 'ئاڵا و سەرمێز',
-    image: '/products/flags.png',
     body: 'دروستکردن و چاپی ئاڵا و سەرمێزی ڕیکلامی، بۆ ئۆفیس و پێشانگا و بۆنەکان، بە قەبارە و دیزاینی جیاواز بەپێی خواستی کڕیار.'
   },
   'کریستال و جلد': {
     title: 'کریستال و جلد',
-    image: '/products/display-awards.png',
     body: 'ڕێزلێنانی تەختە و کریستال و جلد، بە نەخشەی تایبەت و کوالێتی بەرز، بۆ ڕێزلێنان و خەڵات لە مەراسیم و بۆنەکان.'
   },
   'ستیکەر': {
@@ -201,11 +189,10 @@ const scenes = [
 const animationVariants = ['shade', 'roll', 'scatter', 'unfold', 'roll']
 
 const productImages = {
-  printer: '/products/printer.png', sign: '/products/sign-soran.png', showroom: '/products/show-room.png', board: '/products/sign-board.png', brochure: '/products/brochure-roll.png',
-  awards: '/products/display-awards.png', ids: '/products/id-cards.png', vests: '/products/vests.png',
-  tshirt: '/products/tshirt.png', flags: '/products/flags.png', bags: '/products/bags.png',
-  canvas: '/products/canvas.png', pens: '/products/pens-color.png', trifold: '/products/trifold.png',
-  wasl: '/products/wasl w daftar.png'
+  printer: '/products/printer.png', showroom: '/products/show-room.png', board: '/products/sign-board.png', brochure: '/products/brochure-roll.png',
+  awards: '/products/display-awards.png',
+  tshirt: '/products/tshirt.png', flags: '/products/flags.png',
+  wasl: '/products/wasl w daftar.png', raffa: '/products/raffa-ala.png'
 }
 
 function animateProducts(scene: Element) {
@@ -412,10 +399,8 @@ onUnmounted(() => { observer?.kill(); clearAnimSafety(); if (keyDownHandler) win
           <div class="product-stage format-products">
             <div class="glow-ring"></div>
             <img class="product-float format-printer" :src="productImages.printer" alt="پرێنتەر" />
-            <img class="product-float format-wasl" :src="productImages.canvas" alt="چاپی کانڤاس" />
-            <img class="product-float format-canvas" :src="productImages.wasl" alt="چاپی وەسل و دەفتەر" />
-            <!-- <img class="product-float format-rolab" :src="productImages.brochure" alt="چاپی ڕۆلاپ" /> -->
-            <img class="product-float format-trifold" :src="productImages.trifold" alt="بڕۆشور" />
+            <img class="product-float format-wasl" :src="productImages.wasl" alt="چاپی وەسل و دەفتەر" />
+            <img class="product-float format-rolab" :src="productImages.brochure" alt="چاپی ڕۆلاپ" />
           </div>
         </div>
       </section>
@@ -423,10 +408,9 @@ onUnmounted(() => { observer?.kill(); clearAnimSafety(); if (keyDownHandler) win
         <div class="scene-content split-content reverse">
           <div class="product-stage corporate-products">
             <div class="glow-ring"></div>
-            <img class="product-float sign-main" :src="productImages.sign" alt="حەرفی بارز" />
-            <img class="product-float sign-board" :src="productImages.board" alt="تابلۆی بازرگانی" />
+            <img class="product-float sign-board" :src="productImages.board" alt="حەرفی بارز" />
             <img class="product-float sign-showroom" :src="productImages.showroom" alt="شۆوڕووم و کۆشک" />
-            <img class="product-float sign-stand" :src="productImages.brochure" alt="ستاندی ڕیکلامی" />
+            <img class="product-float sign-raffa" :src="productImages.raffa" alt="ئاڵا و رەفە" />
           </div>
           <div class="copy-panel">
             <p class="eyebrow animate-child">02 / SIGNS & ADVERTISING</p>
@@ -459,19 +443,15 @@ onUnmounted(() => { observer?.kill(); clearAnimSafety(); if (keyDownHandler) win
             <div class="glow-ring"></div>
             <img class="product-float merchandise-shirt" :src="productImages.tshirt" alt="تیشێرت" />
             <img class="product-float merchandise-awards" :src="productImages.awards" alt="کریستال و جلد" />
-            <img class="product-float merchandise-vests" :src="productImages.vests" alt="جلوبەرگ" />
-            <img class="product-float merchandise-ids" :src="productImages.ids" alt="ناسنامە" />
             <img class="product-float merchandise-flags" :src="productImages.flags" alt="ئاڵا و سەرمێز" />
           </div>
         </div>
       </section>
       <section id="scene-4" class="cinema-scene contact-scene">
-        <img class="product-float contact-trifold" :src="productImages.trifold" alt="بڕۆشور" />
-        <img class="product-float contact-flags" :src="productImages.flags" alt="ئاڵا" />
         <div class="contact-card">
           <p class="eyebrow animate-child">04 / LET'S CREATE</p>
           <h2 class="animate-child">بۆ ئەوەی شاز دەرکەویت،<br /><em>شاز هەڵبژێرە</em></h2>
-          <p class="animate-child">پڕۆژەکەت یان ئایدیاکەت پێمان بڵێ، بە بەرزترین کواڵیتی و گونجاوترین نرخ دەیکەینە واقع.</p>
+          <p class="animate-child">تەنها دەست پێبکە، بیرۆکە و جێبەجێکردنی بە بەرزترین کوالێتی و گونجاوترین نرخ پێشکەش دەکەین.</p>
           <div class="contact-actions animate-child">
             <a class="contact-number" href="tel:07701566553"><i>📞</i> 0770 156 6553</a>
             <a class="contact-number contact-number--alt" href="tel:07761051515"><i>📱</i> 0776 105 1515</a>
@@ -498,7 +478,6 @@ onUnmounted(() => { observer?.kill(); clearAnimSafety(); if (keyDownHandler) win
     <div v-if="activeService" class="service-modal" @click.self="closeService">
       <button class="service-modal-close" aria-label="داخستن" @click="closeService">✕</button>
       <div class="service-modal-card" role="dialog" aria-modal="true">
-        <img v-if="activeService.image" class="service-modal-image" :src="activeService.image" :alt="activeService.title" />
         <p class="eyebrow service-modal-eyebrow">وردەکاری خزمەتگوزاری</p>
         <h3 class="service-modal-title">{{ activeService.title }}</h3>
         <p class="service-modal-body">{{ activeService.body }}</p>
